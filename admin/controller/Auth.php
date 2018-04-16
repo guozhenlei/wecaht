@@ -12,4 +12,5 @@ class Auth extends Base{
 		$post = $this->request->post();
 		dump($post);die;
 	}
+	
 }
