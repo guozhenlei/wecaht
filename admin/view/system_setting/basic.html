@@ -1,0 +1,118 @@
+{layout name="layout"/}
+
+<body>
+<div class="x-body">
+  <form class="layui-form">
+    <div class="layui-form-item">
+      <label class="layui-form-label">网站名</label>
+      <div class="layui-input-block">
+        <input type="text" name="webName" value="{$res.webName}" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">后台系统名</label>
+      <div class="layui-input-block">
+        <input type="text" name="webAdminName" value="{$res.webAdminName}" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">备案号</label>
+      <div class="layui-input-block">
+        <input type="text" name="record" value="{$res.record}" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">网站标题</label>
+      <div class="layui-input-block">
+        <input type="text" name="webTitle" value="{$res.webTitle}" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">网站描述</label>
+      <div class="layui-input-block">
+        <input type="text" name="webDesc" value="{$res.webDesc}" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">网站关键字</label>
+      <div class="layui-input-block">
+        <input type="text" name="webKey" value="{$res.webKey}" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">网站Log</label>
+      <div class="layui-upload">
+        <button type="button" class="layui-btn" id="test1">上传图片</button>
+        <div class="layui-upload-list">
+          <img class="layui-upload-img img-circle img-thumbnail" id="demo1" src="{$res.webLog}">
+          <input type="hidden" name="webLog" id="log" value="{$res.webLog}">
+          <p id="demoText"></p>
+        </div>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label"> </label>
+      <button  class="layui-btn" lay-filter="webAdd" lay-submit> 提交 </button>
+      <button type="reset" class="layui-btn layui-btn-primary" lay-filter="reset">重置</button>
+    </div>
+
+  </form>
+</div>
+<script src="__ADMIN__/plugins/layui/layui.js"></script>
+<script>
+  layui.use(['form','layer','upload'], function(){
+      $ = layui.jquery;
+      var form = layui.form;
+      var layer = layui.layer;
+      var upload = layui.upload;
+
+      //普通图片上传
+      var uploadInst = upload.render({
+          elem: '#test1'
+          ,url: "{:url('admin/SystemSetting/upImg')}"
+          ,before: function(obj){
+              //预读本地文件示例，不支持ie8
+              obj.preview(function(index, file, result){
+                  $('#demo1').attr('src', result); //图片链接（base64）
+              });
+          }
+          ,done: function(res){
+              console.log(res);
+              //如果上传失败
+              if(res.code !== '200'){
+                  layer.msg('上传失败');
+              }
+              //上传成功
+              $('#log').val(res.data);
+          }
+          ,error: function(){
+              //演示失败状态，并实现重传
+              var demoText = $('#demoText');
+              demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+              demoText.find('.demo-reload').on('click', function(){
+                  uploadInst.upload();
+              });
+          }
+      });
+
+    //表单提交
+    form.on('submit(webAdd)', function(data){
+      var post = data.field;
+        $.ajax({
+            url: "{:url('admin/systemSetting/basic_edit')}",
+            type: 'post',
+            dataType: 'json',
+            data: post,
+            success: function (res) {
+                console.log(res);
+                res = JSON.parse(res);
+                layer.msg(res.data);
+            }
+        });
+      return false;
+    });
+  });
+</script>
+</body>
+</html>

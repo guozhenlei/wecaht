@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>KIT ADMIN</title>
+    <link rel="stylesheet" href="__ADMIN__/plugins/layui/css/layui.css" media="all"/>
+    <link rel="stylesheet" href="__ADMIN__/plugins/font-awesome/css/font-awesome.min.css" media="all"/>
+    <link rel="stylesheet" href="__ADMIN__/src/css/app.css" media="all"/>
+    <link rel="stylesheet" href="__ADMIN__/src/css/themes/default.css" media="all" kit-skin/>
+    <link rel="stylesheet" href="__ADMIN__/src/css/message.css" media="all" kit-skin/>
+    <link rel="stylesheet" href="__ADMIN__/src/css/nprogress.css" media="all" kit-skin/>
+</head>
+<body>
+<div class="x-body">
+    <form class="layui-form" lay-filter="reset">
+        <!--支付宝-->
+
+
+        {if $key =="zfb_pay"}
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">App Id</label>
+            <div class="layui-input-block">
+                <input type="text" name="alipay_app_id" value="{$res.alipay_app_id}" autocomplete="off" class="layui-input" placeholder="支付宝 app_id">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">回调地址</label>
+            <div class="layui-input-block">
+                <input type="text" name="alipay_notify_url" value="{$res.alipay_notify_url}" autocomplete="off" class="layui-input" placeholder="回调地址">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">支付宝公钥</label>
+            <div class="layui-input-block">
+                <input type="text" name="alipay_public_key" value="{$res.alipay_public_key}" autocomplete="off" class="layui-input" placeholder="支付宝公钥">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">商户公钥</label>
+            <div class="layui-input-block">
+                <input type="text" name="merchant_public_key" value="{$res.merchant_public_key}" autocomplete="off" class="layui-input" placeholder="商户公钥">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">商户私钥</label>
+            <div class="layui-input-block">
+                <input type="text" name="merchant_private_key" value="{$res.merchant_private_key}" autocomplete="off" class="layui-input" placeholder="商户私钥">
+            </div>
+        </div>
+
+
+        {elseif $key=="wechat_pay"}
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">App AppId</label>
+            <div class="layui-input-block">
+                <input type="text" name="wechat_appid" value="{$res.wechat_appid}" autocomplete="off" class="layui-input" placeholder="微信 App AppId">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">公众号 AppId</label>
+            <div class="layui-input-block">
+                <input type="text" name="wechat_app_id" value="{$res.wechat_app_id}" autocomplete="off" class="layui-input" placeholder="公众号 AppId">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">小程序 AppId</label>
+            <div class="layui-input-block">
+                <input type="text" name="wechat_miniapp_id" value="{$res.wechat_miniapp_id}" autocomplete="off" class="layui-input" placeholder="小程序 AppId">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">商户 Id</label>
+            <div class="layui-input-block">
+                <input type="text" name="wechat_mch_id" value="{$res.wechat_mch_id}" autocomplete="off" class="layui-input" placeholder="商户 Id">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">Key</label>
+            <div class="layui-input-block">
+                <input type="text" name="wechat_key" value="{$res.wechat_key}" autocomplete="off" class="layui-input" placeholder="Key">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">回调地址</label>
+            <div class="layui-input-block">
+                <input type="text" name="wechat_notify_url" value="{$res.wechat_notify_url}" autocomplete="off" class="layui-input" placeholder="回调地址">
+            </div>
+        </div>
+        {/if}
+
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="pay_submit">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary" lay-filter="reset">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script src="__ADMIN__/plugins/layui/layui.js"></script>
+<script>
+    layui.use(['form', 'layer'], function () {
+        $ = layui.jquery;
+        var form = layui.form
+            , layer = layui.layer;
+
+        //自定义验证规则
+        /*form.verify({
+          nikename: function(value){
+            if(value.length < 5){
+              return '昵称至少得5个字符啊';
+            }
+          }
+          ,pass: [/(.+){6,12}$/, '密码必须6到12位']
+          ,repass: function(value){
+              if($('#L_pass').val()!=$('#L_repass').val()){
+                  return '两次密码不一致';
+              }
+          }
+        });*/
+        //监听提交
+        form.on('submit(pay_submit)', function (data) {
+            console.log(data);
+            //发异步，把数据提交给php
+            var post = data.field; //接收所有数据
+            $.ajax({
+                url: "{:url('admin/systemSetting/payEdit')}",
+                type: 'post',
+                dataType: 'json',
+                data: post,
+                success: function (res) {
+                    res = JSON.parse(res);
+                    layer.msg(res.data);
+                }
+            });
+            return false;
+        });
+
+        //重置
+        form.on('');
+
+
+    });
+</script>
+
+</body>
+
+</html>

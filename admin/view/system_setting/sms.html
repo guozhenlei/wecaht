@@ -1,0 +1,70 @@
+{layout name="layout"/}
+<body>
+<div class="x-body">
+  <form class="layui-form">
+    <div class="layui-form-item">
+      <label class="layui-form-label">短信Key</label>
+      <div class="layui-input-block">
+        <input type="text" name="sms_key" value="{$res.sms_key}" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">短信Secret</label>
+      <div class="layui-input-block">
+        <input type="text" name="sms_secret" value="{$res.sms_secret}" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">短信签名</label>
+      <div class="layui-input-block">
+        <input type="text" name="sms_sign" value="{$res.sms_sign}" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">短信模版名称</label>
+      <div class="layui-input-block">
+        <input type="text" name="sms_tem" value="{$res.sms_tem}" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">短信内容变量</label>
+      <div class="layui-input-block">
+        <input type="text" name="con_var" value="{$res.con_var}" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+
+    <div class="layui-form-item">
+      <label for="L_repass" class="layui-form-label"> </label>
+      <button  class="layui-btn" lay-filter="add" lay-submit=""> 增加 </button>
+      <button type="reset" class="layui-btn layui-btn-primary" lay-filter="reset">重置</button>
+    </div>
+  </form>
+</div>
+<script src="__ADMIN__/plugins/layui/layui.js"></script>
+<script>
+    layui.use(['form','layer'], function(){
+        $ = layui.jquery;
+        var form = layui.form
+            ,layer = layui.layer;
+
+        //监听提交
+        form.on('submit(add)', function(data){
+            var post = data.field;
+            $.ajax({
+                url: "{:url('admin/systemSetting/sms_edit')}",
+                type: 'post',
+                dataType: 'json',
+                data: post,
+                success: function (res) {
+                    res = JSON.parse(res);
+                    layer.msg(res.data);
+                }
+            });
+            return false;
+        });
+
+
+    });
+</script>
+</body>
+</html>

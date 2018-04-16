@@ -1,0 +1,91 @@
+{layout name="layout"}
+<body>
+<div class="x-body">
+    <form class="layui-form" lay-filter="reset">
+        <input type="hidden" name="id" value="{$id}">
+
+        {volist name="all" id="a"}
+
+            <div class="layui-form-item">
+                {if $a.pid == '0'}
+                <label class="layui-form-label">{$a.name}</label>
+                <input type="checkbox" value="" lay-skin="primary" title="全选" lay-filter="allCh">
+                {/if}
+                {if $a.pid != '0'}
+                <div class="layui-input-block">
+                    <input type="checkbox" name="auth['{$a.method}']" title="{$a.name}" value="{$a.method}" {volist name="method" id="m"} {if $a.name == $m.name} checked {/if}{/volist}>
+                </div>
+                {/if}
+            </div>
+
+        {/volist}
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="authEdit">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary" lay-filter="reset">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script src="__ADMIN__/plugins/layui/layui.js"></script>
+<script>
+    layui.use(['form', 'layer'], function () {
+        $ = layui.jquery;
+        var form = layui.form
+            , layer = layui.layer;
+
+        //自定义验证规则
+        /*form.verify({
+          nikename: function(value){
+            if(value.length < 5){
+              return '昵称至少得5个字符啊';
+            }
+          }
+          ,pass: [/(.+){6,12}$/, '密码必须6到12位']
+          ,repass: function(value){
+              if($('#L_pass').val()!=$('#L_repass').val()){
+                  return '两次密码不一致';
+              }
+          }
+        });*/
+
+        //监听提交
+        form.on('submit(authEdit)', function (data) {
+            console.log(data);
+            //发异步，把数据提交给php
+            var post = data.field; //接收所有数据
+            $.ajax({
+                url: "{:url('admin/Auth/authEdit')}",
+                type: 'post',
+                dataType: 'json',
+                data: post,
+                success: function (res) {
+                    /*res = JSON.parse(res);
+                    if(res.msg === 'ok'){
+                        var index = parent.layer.getFrameIndex(window.name);
+                        parent.layer.close(index);
+                        parent.window.location.reload();
+                    }else{
+                        layer.msg(res.data);
+                    }*/
+                }
+            });
+            return false;
+        });
+
+        //全选
+        form.on('checkbox(allCh)',function(data){
+            var index = data.value;
+            console.log(index);
+            $("input[name='auth[" + index + "]']").each(function (i,obj) {
+                obj.checked = data.elem.checked;
+            });
+            form.render('checkbox');
+        });
+    });
+</script>
+
+</body>
+
+</html>

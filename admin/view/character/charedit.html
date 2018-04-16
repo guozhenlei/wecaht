@@ -1,0 +1,70 @@
+{layout name="layout"}
+<body>
+<div class="x-body">
+    <form class="layui-form" lay-filter="reset">
+        <input type="hidden" name="id" value="{$res.id}">
+        <div class="layui-form-item">
+            <label class="layui-form-label">角色名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="name" value="{$res.name}" autocomplete="off" class="layui-input" placeholder="角色名称">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="char_edit">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary" lay-filter="reset">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script src="__ADMIN__/plugins/layui/layui.js"></script>
+<script>
+    layui.use(['form', 'layer'], function () {
+        $ = layui.jquery;
+        var form = layui.form
+            , layer = layui.layer;
+
+        //自定义验证规则
+        /*form.verify({
+          nikename: function(value){
+            if(value.length < 5){
+              return '昵称至少得5个字符啊';
+            }
+          }
+          ,pass: [/(.+){6,12}$/, '密码必须6到12位']
+          ,repass: function(value){
+              if($('#L_pass').val()!=$('#L_repass').val()){
+                  return '两次密码不一致';
+              }
+          }
+        });*/
+
+        //监听提交
+        form.on('submit(char_edit)', function (data) {
+            console.log(data);
+            //发异步，把数据提交给php
+            var post = data.field; //接收所有数据
+            $.ajax({
+                url: "{:url('admin/Character/charEdit')}",
+                type: 'post',
+                dataType: 'json',
+                data: post,
+                success: function (res) {
+                    res = JSON.parse(res);
+                    if(res.msg === 'ok'){
+                        var index = parent.layer.getFrameIndex(window.name);
+                        parent.layer.close(index);
+                        parent.window.location.reload();
+                    }else{
+                        layer.msg(res.data);
+                    }
+                }
+            });
+            return false;
+        });
+    });
+</script>
+
+</body>
+
+</html>
